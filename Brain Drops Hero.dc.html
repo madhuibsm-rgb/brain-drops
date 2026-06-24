@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    --bd-ivory:#F8EDE3; --bd-gold:#D4AF37; --bd-gold-lt:#E3C766; --bd-gold-dp:#B8932C;
+    --bd-burgundy:#5B1F23; --bd-deep:#3F1419; --bd-focus:#AEB4DF;
+    background:#F8EDE3;
+    -webkit-font-smoothing:antialiased;
+  }
+  @keyframes bdReveal{ from{opacity:0; transform:translateY(28px);} to{opacity:1; transform:none;} }
+  @keyframes bdRevealX{ from{opacity:0; transform:translateX(38px) scale(.97);} to{opacity:1; transform:none;} }
+  @keyframes bdFloat{ 0%,100%{transform:translateY(-12px) rotate(-1.2deg);} 50%{transform:translateY(16px) rotate(1deg);} }
+  @keyframes bdDrift1{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(7%,-5%) scale(1.14);} }
+  @keyframes bdDrift2{ 0%,100%{transform:translate(0,0) scale(1.06);} 50%{transform:translate(-6%,6%) scale(0.98);} }
+  @keyframes bdSheen{ 0%{transform:translateX(-130%) skewX(-20deg);} 55%,100%{transform:translateX(260%) skewX(-20deg);} }
+  @keyframes bdGlow{ 0%,100%{opacity:.55; transform:scale(1);} 50%{opacity:.85; transform:scale(1.08);} }
+  @keyframes bdCue{ 0%{transform:translateY(0); opacity:.35;} 50%{transform:translateY(7px); opacity:.9;} 100%{transform:translateY(0); opacity:.35;} }
+  @keyframes bdSpin{ to{ transform:rotate(360deg); } }
+  @keyframes bdPulse{ 0%,100%{ transform:scale(1); opacity:.9; } 50%{ transform:scale(1.045); opacity:1; } }
+  @keyframes bdModalIn{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes bdModalOut{ from{ opacity:1; } to{ opacity:0; } }
+  @keyframes bdCardIn{ from{ opacity:0; transform:translateY(18px) scale(.97); } to{ opacity:1; transform:none; } }
+  @keyframes bdCardOut{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateY(18px) scale(.97); } }
+  @media (min-width:920px){
+    [data-cmp]{ grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) !important; }
+    [data-cmp-video]{ order:0 !important; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script src="image-slot.js"></script>
+</helmet>
+
+<div ref="{{ rootRef }}" style="position:relative; width:100%; background:var(--bd-ivory,#F7F2EA); font-family:'Hanken Grotesk',system-ui,sans-serif;">
+
+  <!-- ===== STICKY NAV (glass) ===== -->
+  <nav style="position:fixed; top:14px; left:clamp(16px,4vw,56px); right:clamp(16px,4vw,56px); z-index:60; display:flex; align-items:center; justify-content:space-between; gap:24px; padding:13px 22px; border-radius:18px; background:rgba(255,252,245,.55); backdrop-filter:blur(20px) saturate(150%); -webkit-backdrop-filter:blur(20px) saturate(150%); border:1px solid rgba(74,16,32,.1); box-shadow:0 10px 40px -20px rgba(74,16,32,.5), inset 0 1px 0 rgba(255,255,255,.7); animation:bdReveal .8s ease both;">
+    <div style="display:flex; flex-direction:column; line-height:1;">
+      <span style="font-size:9.5px; letter-spacing:.42em; font-weight:700; color:var(--bd-gold-dp,#C39A2E); text-transform:uppercase;">The Drops Co.</span>
+      <span style="font-family:'Cormorant Garamond',serif; font-size:23px; font-weight:600; letter-spacing:.01em; color:var(--bd-burgundy,#7A2036); margin-top:3px;">Brain Drops</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:28px;" data-nav-links="">
+      <a href="#how" style="font-size:13px; font-weight:500; letter-spacing:.02em; color:rgba(74,16,32,.72); text-decoration:none; transition:color .3s;" style-hover="color:var(--bd-gold-dp,#C39A2E)">How It Works</a>
+      <a href="#ingredients" style="font-size:13px; font-weight:500; letter-spacing:.02em; color:rgba(74,16,32,.72); text-decoration:none; transition:color .3s;" style-hover="color:var(--bd-gold-dp,#C39A2E)">Ingredients</a>
+      <a href="#why" style="font-size:13px; font-weight:500; letter-spacing:.02em; color:rgba(74,16,32,.72); text-decoration:none; transition:color .3s;" style-hover="color:var(--bd-gold-dp,#C39A2E)">Why Liquid</a>
+      <a href="#reviews" style="font-size:13px; font-weight:500; letter-spacing:.02em; color:rgba(74,16,32,.72); text-decoration:none; transition:color .3s;" style-hover="color:var(--bd-gold-dp,#C39A2E)">Reviews</a>
+    </div>
+    <a href="#cta" style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:999px; font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--bd-deep,#4A1020); text-decoration:none; background:linear-gradient(180deg, #f0d488, var(--bd-gold,#E0B84A)); box-shadow:0 8px 22px -8px rgba(224,184,74,.85), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .3s, box-shadow .3s;" style-hover="transform:translateY(-2px); box-shadow:0 14px 30px -8px rgba(224,184,74,.95), inset 0 1px 0 rgba(255,255,255,.7)">Shop Now</a>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 1 — HERO -->
+  <!-- ============================================================ -->
+  <section data-screen-label="Hero" style="position:relative; min-height:100vh; overflow:hidden; isolation:isolate;">
+    <div ref="{{ bgRef }}" style="position:absolute; inset:-7%; z-index:0; will-change:transform; transform:scale(1.06);">
+      <div style="position:absolute; inset:0; background:radial-gradient(120% 95% at 80% 12%, #fdf7ea 0%, #f6eedd 38%, #efe4cd 68%, #e6d7bd 100%);"></div>
+      <div style="position:absolute; inset:0; background:radial-gradient(40% 48% at 76% 18%, rgba(214,165,74,.52), rgba(214,165,74,0) 70%); mix-blend-mode:multiply; animation:bdDrift1 18s ease-in-out infinite;"></div>
+      <div style="position:absolute; inset:0; background:radial-gradient(46% 54% at 34% 74%, rgba(174,180,223,.42), rgba(174,180,223,0) 66%); mix-blend-mode:screen; animation:bdDrift2 22s ease-in-out infinite;"></div>
+      <div style="position:absolute; inset:0; background:radial-gradient(32% 40% at 88% 58%, rgba(255,222,150,.5), rgba(255,222,150,0) 70%); mix-blend-mode:screen; animation:bdDrift1 26s ease-in-out infinite reverse;"></div>
+      <!-- Drop-in cinematic loop: set the <video> src to your file (e.g. media/hero.mp4). Hidden until a real file loads, so the golden-light CSS scene is the default. -->
+      <video ref="{{ videoRef }}" autoplay="" muted="" loop="" playsinline="" onLoadedData="{{ onVideoLoaded }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.4s ease; mix-blend-mode:luminosity;"></video>
+      <div style="position:absolute; inset:0; opacity:.06; mix-blend-mode:multiply; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"></div>
+    </div>
+
+    <div style="position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(102deg, rgba(252,247,236,.9) 0%, rgba(252,247,236,.58) 30%, rgba(252,247,236,.12) 54%, rgba(252,247,236,0) 74%);"></div>
+    <div style="position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(130% 130% at 50% 42%, rgba(0,0,0,0) 55%, rgba(122,32,54,.12) 100%);"></div>
+    <div style="position:absolute; left:0; right:0; bottom:0; height:30%; z-index:1; pointer-events:none; background:linear-gradient(to top, rgba(230,215,188,.9), rgba(230,215,188,0));"></div>
+
+    <div style="position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh;">
+      <div style="flex:1; display:flex; align-items:center; gap:clamp(20px,3vw,52px); padding:clamp(110px,14vh,150px) clamp(20px,4vw,56px) 0; flex-wrap:wrap;">
+        <div ref="{{ contentRef }}" style="flex:1 1 420px; max-width:560px; will-change:transform;">
+          <div style="display:inline-flex; align-items:center; gap:10px; padding:7px 14px; border-radius:999px; background:rgba(122,32,54,.06); border:1px solid rgba(122,32,54,.16); backdrop-filter:blur(8px); margin-bottom:26px; animation:bdReveal .8s ease both; animation-delay:.05s;">
+            <span style="width:6px; height:6px; border-radius:50%; background:var(--bd-gold-dp,#C39A2E); box-shadow:0 0 10px var(--bd-gold,#E0B84A);"></span>
+            <span style="font-size:10.5px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#C39A2E);">The Drops Co.</span>
+          </div>
+          <h1 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(38px,5vw,70px); line-height:1.02; letter-spacing:-.01em; color:var(--bd-deep,#4A1020); margin:0 0 22px; text-wrap:balance; animation:bdReveal .9s cubic-bezier(.2,.7,.2,1) both; animation-delay:.12s;">
+            Brain Fog Doesn't Have To Be <em style="font-style:italic; color:var(--bd-gold-dp,#C39A2E);">Part Of Your Day.</em>
+          </h1>
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,2.1vw,26px); color:var(--bd-burgundy,#7A2036); margin:0 0 16px; letter-spacing:.01em; animation:bdReveal .9s ease both; animation-delay:.2s;">Ancient Wisdom. Clearer Days.</p>
+          <p style="font-size:clamp(15px,1.15vw,17px); line-height:1.62; color:rgba(74,16,32,.76); max-width:460px; margin:0 0 30px; font-weight:400; animation:bdReveal .9s ease both; animation-delay:.28s;">A delicious liquid wellness ritual crafted with Vitamins, Neutropics, Adaptogens, Bacopa, and Ashwagandha to support mental clarity, focus, and everyday balance.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:10px 12px; margin-bottom:34px; animation:bdReveal .9s ease both; animation-delay:.36s;">
+            <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="5">
+              <div style="display:inline-flex; align-items:center; gap:9px; padding:9px 15px 9px 11px; border-radius:999px; background:rgba(255,253,248,.6); border:1px solid rgba(122,32,54,.14); transition:background .35s, border-color .35s, transform .35s;" style-hover="background:rgba(224,184,74,.18); border-color:rgba(224,184,74,.6); transform:translateY(-2px)">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:linear-gradient(180deg,#f0d488,var(--bd-gold,#E0B84A)); color:var(--bd-deep,#4A1020); font-size:11px; font-weight:800; box-shadow:0 2px 8px -2px rgba(224,184,74,.8);">✓</span>
+                <span style="font-size:13.5px; font-weight:600; letter-spacing:.01em; color:var(--bd-deep,#4A1020);">{{ b }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px; animation:bdReveal .9s ease both; animation-delay:.44s;">
+            <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:17px 34px; border-radius:999px; font-size:15px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#4A1020); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#E0B84A) 60%, #b88f29 100%); box-shadow:0 16px 40px -12px rgba(224,184,74,.7), inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 6px rgba(120,80,10,.4); transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 24px 52px -14px rgba(224,184,74,.85), inset 0 1px 0 rgba(255,255,255,.7)" style-active="transform:translateY(-1px) scale(.99)">
+              <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+              <span style="position:relative;">Start Your Clarity Ritual</span>
+            </a>
+            <a href="#how" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:999px; font-size:14.5px; font-weight:600; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#4A1020); background:rgba(255,253,248,.55); border:1px solid rgba(74,16,32,.2); backdrop-filter:blur(14px) saturate(130%); -webkit-backdrop-filter:blur(14px) saturate(130%); box-shadow:inset 0 1px 0 rgba(255,255,255,.6); transition:background .35s, border-color .35s, transform .35s;" style-hover="background:rgba(255,253,248,.85); border-color:rgba(74,16,32,.4); transform:translateY(-3px)">
+              See How It Works
+              <span style="font-size:16px; line-height:1;">→</span>
+            </a>
+          </div>
+        </div>
+
+        <div style="flex:1 1 460px; align-self:stretch; display:flex; align-items:center; justify-content:center; min-height:48vh; position:relative;">
+          <div style="position:absolute; width:min(60%,420px); aspect-ratio:1; border-radius:50%; background:radial-gradient(circle, rgba(224,184,74,.6), rgba(224,184,74,0) 68%); filter:blur(20px); animation:bdGlow 7s ease-in-out infinite;"></div>
+          <div ref="{{ sachetRef }}" style="position:relative; will-change:transform; z-index:2;">
+            <div style="animation:bdFloat 9s ease-in-out infinite; filter:drop-shadow(0 42px 52px rgba(74,16,32,.35));">
+              <image-slot id="bd-sachet-hero" shape="rounded" radius="34" placeholder="Brain Drops sachet — drop product render (PNG)" style="display:block; width:clamp(280px,30vw,400px); height:clamp(380px,42vw,540px); animation:bdRevealX 1s cubic-bezier(.2,.7,.2,1) both; animation-delay:.3s;"></image-slot>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin:0 clamp(20px,4vw,56px) 18px; padding:16px clamp(18px,3vw,34px); border-radius:18px; background:rgba(255,252,245,.55); backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); border:1px solid rgba(74,16,32,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.6); display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:14px clamp(20px,3vw,40px); animation:bdReveal .9s ease both; animation-delay:.52s;">
+        <div style="display:inline-flex; align-items:center; gap:9px;">
+          <span style="color:var(--bd-gold-dp,#C39A2E); font-size:15px; letter-spacing:2px;">★★★★★</span>
+          <span style="font-size:12.5px; font-weight:600; color:rgba(74,16,32,.65);">Loved by clear minds</span>
+        </div>
+        <sc-for list="{{ trust }}" as="t" hint-placeholder-count="4">
+          <div style="display:inline-flex; align-items:center; gap:11px;">
+            <span style="width:5px; height:5px; border-radius:50%; background:var(--bd-gold-dp,#C39A2E); opacity:.75;"></span>
+            <span style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:rgba(74,16,32,.78);">{{ t }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="position:absolute; left:50%; bottom:92px; transform:translateX(-50%); z-index:11; display:flex; flex-direction:column; align-items:center; gap:7px; pointer-events:none;">
+      <span style="font-size:9px; letter-spacing:.34em; text-transform:uppercase; color:rgba(74,16,32,.45); writing-mode:vertical-rl;">Scroll</span>
+      <span style="color:var(--bd-gold-dp,#C39A2E); font-size:15px; animation:bdCue 1.9s ease-in-out infinite;">↓</span>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 2 — PROBLEM RECOGNITION -->
+  <!-- ============================================================ -->
+  <section data-screen-label="Problem" style="position:relative; padding:clamp(84px,12vh,150px) clamp(20px,6vw,110px); background:#F2EADB;">
+    <div style="max-width:1180px; margin:0 auto;">
+      <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; max-width:760px; margin:0 auto 56px;">
+        <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#C39A2E);">Sound Familiar?</span>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4.4vw,58px); line-height:1.05; letter-spacing:-.01em; color:var(--bd-deep,#4A1020); margin:14px 0 0; text-wrap:balance;">Ever Feel Like Your Mind Is Everywhere At Once?</h2>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px;">
+        <sc-for list="{{ problems }}" as="p" hint-placeholder-count="3">
+          <div data-reveal="" style="opacity:0; transform:translateY(40px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:{{ p.delay }}; background:rgba(255,253,248,.7); border:1px solid rgba(74,16,32,.1); border-radius:24px; overflow:hidden; box-shadow:0 24px 50px -34px rgba(74,16,32,.4);">
+            <image-slot id="{{ p.id }}" shape="rect" placeholder="{{ p.ph }}" style="display:block; width:100%; height:230px;"></image-slot>
+            <div style="padding:24px 26px 28px;">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; border:1px solid rgba(110,116,168,.5); background:rgba(174,180,223,.18); font-family:'Cormorant Garamond',serif; font-size:16px; font-style:italic; color:#5E649C; margin-bottom:14px;">{{ p.n }}</span>
+              <p style="font-family:'Cormorant Garamond',serif; font-size:clamp(20px,1.9vw,25px); line-height:1.25; color:var(--bd-deep,#4A1020); margin:0;">{{ p.text }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <p data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,2.3vw,30px); line-height:1.4; color:var(--bd-burgundy,#7A2036); max-width:640px; margin:56px auto 0;">Modern life moves fast. Sometimes our minds struggle to keep pace.</p>
+
+      <div data-reveal="" style="opacity:0; transform:translateY(24px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin:clamp(46px,7vh,78px) auto 0;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); color:var(--bd-burgundy,#5B1F23); margin:0 0 18px;">There’s a clearer way to move through your day. Sounds Interesting?</p>
+        <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 30px; border-radius:999px; font-size:14.5px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#D4AF37) 60%, #b88f29 100%); box-shadow:0 16px 40px -14px rgba(212,175,55,.7), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 24px 52px -16px rgba(212,175,55,.85)" style-active="transform:translateY(-1px) scale(.99)">
+          <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+          <span style="position:relative;">Join The Waitlist →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 3 — THE BRAIN DROPS DIFFERENCE (sticky product) -->
+  <!-- ============================================================ -->
+  <section data-screen-label="Difference" style="position:relative; padding:clamp(70px,9vh,120px) clamp(20px,6vw,110px); background:var(--bd-ivory,#F7F2EA);">
+    <div style="max-width:1180px; margin:0 auto; display:flex; gap:clamp(36px,5vw,90px); align-items:flex-start; flex-wrap:wrap;">
+      <!-- sticky product -->
+      <div style="flex:1 1 360px; position:sticky; top:120px; align-self:flex-start; display:flex; justify-content:center;">
+        <div style="position:relative;">
+          <div style="position:absolute; inset:-12% -6%; border-radius:50%; background:radial-gradient(circle, rgba(224,184,74,.45), rgba(224,184,74,0) 66%); filter:blur(22px);"></div>
+          <div style="filter:drop-shadow(0 38px 48px rgba(74,16,32,.32));">
+            <image-slot id="bd-sachet-hero" shape="rounded" radius="30" placeholder="Brain Drops sachet" style="display:block; position:relative; width:clamp(240px,24vw,330px); height:clamp(320px,32vw,440px);"></image-slot>
+          </div>
+        </div>
+      </div>
+      <!-- scrollable content -->
+      <div style="flex:1 1 440px; max-width:560px;">
+        <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1);">
+          <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#C39A2E);">The Brain Drops Difference</span>
+          <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4vw,54px); line-height:1.04; color:var(--bd-deep,#4A1020); margin:14px 0 24px; text-wrap:balance;">A Daily Ritual For Clearer Thinking.</h2>
+          <p style="font-size:clamp(15px,1.15vw,17px); line-height:1.65; color:rgba(74,16,32,.76); margin:0 0 22px;">Brain Drops combines thoughtfully selected ingredients inspired by ancient wisdom in a convenient liquid sachet designed for modern life.</p>
+          <div style="display:flex; flex-direction:column; gap:6px; margin:0 0 16px;">
+            <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; color:var(--bd-burgundy,#7A2036);">No pills.</span>
+            <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; color:var(--bd-burgundy,#7A2036);">No complicated routines.</span>
+            <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; color:var(--bd-burgundy,#7A2036);">No unnecessary effort.</span>
+          </div>
+          <p style="font-size:clamp(15px,1.15vw,17px); line-height:1.65; color:rgba(74,16,32,.76); margin:0 0 44px;">Simply open, sip and continue your day.</p>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+          <sc-for list="{{ diffBlocks }}" as="d" hint-placeholder-count="4">
+            <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:{{ d.delay }}; padding:24px 22px; border-radius:20px; background:rgba(255,253,248,.7); border:1px solid rgba(74,16,32,.1); box-shadow:0 20px 44px -34px rgba(74,16,32,.4); transition:transform .4s, box-shadow .4s, background .4s;" style-hover="transform:translateY(-4px); box-shadow:0 30px 56px -34px rgba(74,16,32,.5)">
+              <image-slot id="{{ d.id }}" shape="circle" placeholder="art" style="display:block; width:58px; height:58px; margin-bottom:16px;"></image-slot>
+              <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:22px; line-height:1.1; color:var(--bd-deep,#4A1020); margin:0;">{{ d.title }}</h3>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div data-reveal="" style="opacity:0; transform:translateY(24px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin:clamp(46px,7vh,78px) auto 0;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); color:var(--bd-burgundy,#5B1F23); margin:0 0 18px;">Make it your daily ritual.&nbsp;<span style="background-color: rgb(242, 234, 219);">Find this interesting ?</span></p>
+        <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 30px; border-radius:999px; font-size:14.5px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#D4AF37) 60%, #b88f29 100%); box-shadow:0 16px 40px -14px rgba(212,175,55,.7), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 24px 52px -16px rgba(212,175,55,.85)" style-active="transform:translateY(-1px) scale(.99)">
+          <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+          <span style="position:relative;">Join The Waitlist →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 4 — HOW IT WORKS -->
+  <!-- ============================================================ -->
+  <section id="how" data-screen-label="How It Works" style="position:relative; padding:clamp(84px,12vh,150px) clamp(20px,6vw,110px); background:linear-gradient(180deg, #F7F2EA 0%, #F3ECDD 100%);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin-bottom:60px;">
+        <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#C39A2E);">The Ritual</span>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4.4vw,56px); line-height:1.05; color:var(--bd-deep,#4A1020); margin:14px 0 0;">Three Seconds To Clearer.</h2>
+      </div>
+      <div style="position:relative; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:28px;">
+        <div data-reveal="" style="opacity:1; transform:scaleX(0); transform-origin:left; transition:transform 1.2s cubic-bezier(.2,.7,.2,1) .2s; position:absolute; top:38px; left:8%; right:8%; height:2px; background:linear-gradient(90deg, rgba(224,184,74,0), var(--bd-gold,#E0B84A), rgba(224,184,74,0)); z-index:0;"></div>
+        <div data-reveal="" style="opacity:0; transform:translateY(40px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); position:relative; z-index:1; text-align:center;">
+          <div style="width:88px; height:88px; margin:0 auto 22px; border-radius:50%; background:rgba(255,253,248,.85); border:1px solid rgba(224,184,74,.5); box-shadow:0 16px 34px -20px rgba(74,16,32,.4), inset 0 1px 0 rgba(255,255,255,.7); display:flex; align-items:center; justify-content:center;">
+            <img src="media/icon-open.png" alt="" draggable="false" style="width:46px; height:46px; object-fit:contain; -webkit-user-drag:none;">
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(24px,2.4vw,32px); color:var(--bd-deep,#4A1020); margin:0 0 10px;">Open</h3>
+          <p style="font-size:15px; line-height:1.6; color:rgba(74,16,32,.72); max-width:260px; margin:0 auto;">Tear open the sachet in seconds.</p>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(40px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:.15s; position:relative; z-index:1; text-align:center;">
+          <div style="width:88px; height:88px; margin:0 auto 22px; border-radius:50%; background:rgba(255,253,248,.85); border:1px solid rgba(224,184,74,.5); box-shadow:0 16px 34px -20px rgba(74,16,32,.4), inset 0 1px 0 rgba(255,255,255,.7); display:flex; align-items:center; justify-content:center;">
+            <img src="media/icon-sip.png" alt="" draggable="false" style="width:46px; height:46px; object-fit:contain; -webkit-user-drag:none;">
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(24px,2.4vw,32px); color:var(--bd-deep,#4A1020); margin:0 0 10px;">Sip</h3>
+          <p style="font-size:15px; line-height:1.6; color:rgba(74,16,32,.72); max-width:260px; margin:0 auto;">Enjoy the delicious liquid ritual.</p>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(40px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:.3s; position:relative; z-index:1; text-align:center;">
+          <div style="width:88px; height:88px; margin:0 auto 22px; border-radius:50%; background:rgba(255,253,248,.85); border:1px solid rgba(224,184,74,.5); box-shadow:0 16px 34px -20px rgba(74,16,32,.4), inset 0 1px 0 rgba(255,255,255,.7); display:flex; align-items:center; justify-content:center;">
+            <img src="media/icon-showup.png" alt="" draggable="false" style="width:46px; height:46px; object-fit:contain; -webkit-user-drag:none;">
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(24px,2.4vw,32px); color:var(--bd-deep,#4A1020); margin:0 0 10px;">Show Up</h3>
+          <p style="font-size:15px; line-height:1.6; color:rgba(74,16,32,.72); max-width:260px; margin:0 auto;">Continue your day feeling ready for what matters.</p>
+        </div>
+      </div>
+
+      <div data-reveal="" style="opacity:0; transform:translateY(24px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin:clamp(46px,7vh,78px) auto 0;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); color:var(--bd-burgundy,#5B1F23); margin:0 0 18px;">Three seconds is all it takes.&nbsp;<span style="background-color: rgb(242, 234, 219);">Would you be interested to try it?</span></p>
+        <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 30px; border-radius:999px; font-size:14.5px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#D4AF37) 60%, #b88f29 100%); box-shadow:0 16px 40px -14px rgba(212,175,55,.7), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 24px 52px -16px rgba(212,175,55,.85)" style-active="transform:translateY(-1px) scale(.99)">
+          <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+          <span style="position:relative;">Join The Waitlist →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 5 — INGREDIENT STORY -->
+  <!-- ============================================================ -->
+  <section id="ingredients" data-screen-label="Ingredients" style="position:relative; padding:clamp(84px,12vh,150px) clamp(20px,6vw,110px); background:var(--bd-ivory,#F7F2EA);">
+    <div style="max-width:1180px; margin:0 auto;">
+      <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; max-width:760px; margin:0 auto 56px;">
+        <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#B8932C);">Ingredient Story</span>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4.4vw,58px); line-height:1.05; color:var(--bd-deep,#3F1419); margin:14px 0 16px; text-wrap:balance;">Trusted For Generations. Designed For Today.</h2>
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); line-height:1.4; color:var(--bd-burgundy,#5B1F23); margin:0;">Brahmi and Ashwagandha — the quiet difference between a foggy day and a clear one.</p>
+      </div>
+
+      <div data-cmp="" data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); display:grid; grid-template-columns:1fr; gap:clamp(22px,3vw,44px); align-items:center;">
+
+        <!-- LEFT : the foggy day -->
+        <div style="display:flex; flex-direction:column; gap:13px;">
+          <span style="font-size:11px; letter-spacing:.26em; font-weight:700; text-transform:uppercase; color:rgba(74,16,32,.45); margin-bottom:2px;">Without The Ritual</span>
+          <sc-for list="{{ foggyList }}" as="f" hint-placeholder-count="5">
+            <div data-card="" style="display:flex; align-items:center; gap:13px; padding:14px 18px; border-radius:16px; background:rgba(255,253,248,.72); border:1px solid rgba(91,31,35,.1); box-shadow:0 3px 9px rgba(63,74,126,.05), 0 1px 22px rgba(63,74,126,.08); cursor:grab; touch-action:none; user-select:none; transition:transform .6s cubic-bezier(.2,.9,.25,1.2), box-shadow .4s, border-color .3s;">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:rgba(91,31,35,.06); border:1px solid rgba(91,31,35,.2); color:rgba(91,31,35,.5); font-size:11px; flex:none; pointer-events:none;">✕</span>
+              <span style="font-size:clamp(13px,1.05vw,16px); line-height:1.4; color:rgba(74,16,32,.62); pointer-events:none;">{{ f }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- CENTER : golden liquid video -->
+        <div data-cmp-video="" style="order:-1; display:flex; align-items:center; justify-content:center;">
+          <div data-card="" data-vid="" style="position:relative; width:clamp(220px,24vw,380px); height:clamp(220px,24vw,380px); flex-shrink:0; cursor:grab; touch-action:none;">
+            <div style="position:absolute; inset:-12%; border-radius:50%; background:radial-gradient(circle, rgba(212,175,55,.5), rgba(212,175,55,0) 66%); filter:blur(22px);"></div>
+            <div style="position:relative; width:100%; height:100%; border-radius:50%; overflow:hidden; border:1px solid rgba(212,175,55,.55); box-shadow:0 34px 64px -34px rgba(63,20,25,.55), inset 0 0 0 7px rgba(255,253,248,.55); background:radial-gradient(circle at 50% 35%, #f2dca0, #c79a2c);">
+              <video ref="{{ clipVideoRef }}" autoplay="" loop="" muted="" playsinline="" style="position:absolute; top:50%; left:50%; width:160%; height:160%; object-fit:cover; transform:translate(-50%,-50%); pointer-events:none;"></video>
+              <div data-vidoverlay="" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(63,20,25,.32); opacity:0; transition:opacity .3s; pointer-events:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:54px; height:54px; border-radius:50%; background:rgba(255,253,248,.92); color:var(--bd-burgundy,#5B1F23); font-size:16px; padding-left:4px; box-shadow:0 8px 24px -8px rgba(0,0,0,.4);">▶</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT : with Brain Drops -->
+        <div style="display:flex; flex-direction:column; gap:13px;">
+          <span style="font-size:11px; letter-spacing:.26em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#B8932C); margin-bottom:2px;">With Brain Drops</span>
+          <sc-for list="{{ clearList }}" as="c" hint-placeholder-count="5">
+            <div data-card="" style="display:flex; align-items:center; gap:13px; padding:14px 18px; border-radius:16px; background:rgba(255,253,248,.85); border:1px solid rgba(212,175,55,.35); box-shadow:0 3px 9px rgba(63,74,126,.05), 0 1px 22px rgba(63,74,126,.1); cursor:grab; touch-action:none; user-select:none; transition:transform .6s cubic-bezier(.2,.9,.25,1.2), box-shadow .4s, border-color .3s;">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:linear-gradient(180deg,#ecd27e,var(--bd-gold,#D4AF37)); color:var(--bd-deep,#3F1419); font-size:11px; font-weight:800; flex:none; pointer-events:none;">✓</span>
+              <span style="font-size:clamp(13px,1.05vw,16px); line-height:1.4; color:var(--bd-deep,#3F1419); font-weight:500; pointer-events:none;">{{ c }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <p data-reveal="" style="display:none; opacity:0; transform:translateY(20px); transition:opacity .8s ease, transform .8s ease; text-align:center; margin:30px 0 0; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:rgba(74,16,32,.4);">Tap to mark · drag to lift · tap the circle to pause</p>
+
+      <div data-reveal="" style="opacity:0; transform:translateY(24px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin:clamp(40px,5vh,60px) auto 0;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); color:var(--bd-burgundy,#5B1F23); margin:0 0 18px;">Ancient ingredients, ready for modern life.&nbsp;<span style="background-color: rgb(242, 234, 219);">Would you be interested to try this?</span></p>
+        <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 30px; border-radius:999px; font-size:14.5px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#D4AF37) 60%, #b88f29 100%); box-shadow:0 16px 40px -14px rgba(212,175,55,.7), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 24px 52px -16px rgba(212,175,55,.85)" style-active="transform:translateY(-1px) scale(.99)">
+          <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+          <span style="position:relative;">Join The Waitlist →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 6 — WHY LIQUID (burgundy contrast) -->
+  <!-- ============================================================ -->
+  <section id="why" data-screen-label="Why Liquid" style="position:relative; overflow:hidden; padding:clamp(84px,12vh,150px) clamp(20px,6vw,110px); background:var(--bd-burgundy,#7A2036);">
+    <div style="position:absolute; top:-10%; right:-6%; width:46%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle, rgba(224,184,74,.22), rgba(224,184,74,0) 68%); pointer-events:none;"></div>
+    <div style="position:relative; max-width:1080px; margin:0 auto;">
+      <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; max-width:740px; margin:0 auto 60px;">
+        <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold,#E0B84A);">Why Liquid</span>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4.6vw,60px); line-height:1.05; color:var(--bd-ivory,#F7F2EA); margin:14px 0 0; text-wrap:balance;">Wellness Should Fit Into Life.<br>Not Interrupt It.</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; align-items:stretch;">
+        <!-- Brain Drops -->
+        <div data-reveal="" style="opacity:0; transform:translateY(40px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); padding:38px 34px; border-radius:26px; background:linear-gradient(180deg, rgba(224,184,74,.2), rgba(224,184,74,.06)); border:1px solid rgba(224,184,74,.45); box-shadow:0 30px 60px -40px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.2);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px;">
+            <span style="font-size:11px; letter-spacing:.28em; font-weight:700; text-transform:uppercase; color:var(--bd-gold,#E0B84A);">Brain Drops</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <sc-for list="{{ liquidPros }}" as="x" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:linear-gradient(180deg,#f0d488,var(--bd-gold,#E0B84A)); color:var(--bd-deep,#4A1020); font-size:13px; font-weight:800; flex:none;">✓</span>
+                <span style="font-family:'Cormorant Garamond',serif; font-size:clamp(24px,2.6vw,34px); color:var(--bd-ivory,#F7F2EA);">{{ x }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <!-- Traditional -->
+        <div data-reveal="" style="opacity:0; transform:translateY(40px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:.12s; padding:38px 34px; border-radius:26px; background:rgba(255,255,255,.04); border:1px solid rgba(247,242,234,.16);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px;">
+            <span style="font-size:11px; letter-spacing:.28em; font-weight:700; text-transform:uppercase; color:rgba(247,242,234,.55);">Traditional Wellness</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <sc-for list="{{ liquidCons }}" as="y" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:rgba(247,242,234,.08); border:1px solid rgba(247,242,234,.2); color:rgba(247,242,234,.5); font-size:12px; font-weight:700; flex:none;">✕</span>
+                <span style="font-family:'Cormorant Garamond',serif; font-size:clamp(22px,2.4vw,30px); color:rgba(247,242,234,.62);">{{ y }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal="" style="opacity:0; transform:translateY(24px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin:clamp(46px,7vh,78px) auto 0;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); color:var(--bd-gold,#E0B84A); margin:0 0 18px;">Wellness that fits your day — not the other way around. Interested?</p>
+        <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 30px; border-radius:999px; font-size:14.5px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#E0B84A) 60%, #b88f29 100%); box-shadow:0 18px 44px -14px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 26px 56px -16px rgba(0,0,0,.55)" style-active="transform:translateY(-1px) scale(.99)">
+          <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+          <span style="position:relative;">Join The Waitlist →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 7 — MADE FOR REAL LIFE (masonry) -->
+  <!-- ============================================================ -->
+  <section data-screen-label="Made For Real Life" style="position:relative; padding:clamp(84px,12vh,150px) clamp(20px,6vw,110px); background:var(--bd-ivory,#F7F2EA);">
+    <div style="max-width:1180px; margin:0 auto;">
+      <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; margin-bottom:48px;">
+        <div style="max-width:560px;">
+          <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#C39A2E);">Made For Real Life</span>
+          <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4.4vw,58px); line-height:1.04; color:var(--bd-deep,#4A1020); margin:14px 0 0;">Wherever Life Takes You.</h2>
+        </div>
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); line-height:1.4; color:var(--bd-burgundy,#7A2036); max-width:320px; margin:0;">Designed to move with your day. Not slow it down.</p>
+      </div>
+      <div style="column-count:3; column-gap:18px;" data-masonry="">
+        <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin-bottom:48px; position:relative; z-index:1;" style-hover="z-index:30">
+          <image-slot id="bd-life-1" shape="rounded" radius="18" placeholder="Morning desk" style="display:block; width:100%; height:260px; box-shadow:0 22px 46px -34px rgba(74,16,32,.45); border-radius:18px;"></image-slot>
+          <span style="position:absolute; left:14px; bottom:12px; padding:5px 12px; border-radius:999px; background:rgba(74,16,32,.55); backdrop-filter:blur(6px); font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA);">Morning Desk</span>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin-bottom:48px; position:relative; z-index:1;" style-hover="z-index:30">
+          <image-slot id="bd-life-2" shape="rounded" radius="18" placeholder="Airport" style="display:block; width:100%; height:200px; box-shadow:0 22px 46px -34px rgba(74,16,32,.45); border-radius:18px;"></image-slot>
+          <span style="position:absolute; left:14px; bottom:12px; padding:5px 12px; border-radius:999px; background:rgba(74,16,32,.55); backdrop-filter:blur(6px); font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA);">Airport</span>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin-bottom:48px; position:relative; z-index:1;" style-hover="z-index:30">
+          <image-slot id="bd-life-3" shape="rounded" radius="18" placeholder="Creative work" style="display:block; width:100%; height:300px; box-shadow:0 22px 46px -34px rgba(74,16,32,.45); border-radius:18px;"></image-slot>
+          <span style="position:absolute; left:14px; bottom:12px; padding:5px 12px; border-radius:999px; background:rgba(74,16,32,.55); backdrop-filter:blur(6px); font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA);">Creative Work</span>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin-bottom:48px; position:relative; z-index:1;" style-hover="z-index:30">
+          <image-slot id="bd-life-4" shape="rounded" radius="18" placeholder="Meeting prep" style="display:block; width:100%; height:230px; box-shadow:0 22px 46px -34px rgba(74,16,32,.45); border-radius:18px;"></image-slot>
+          <span style="position:absolute; left:14px; bottom:12px; padding:5px 12px; border-radius:999px; background:rgba(74,16,32,.55); backdrop-filter:blur(6px); font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA);">Meeting Prep</span>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin-bottom:48px; position:relative; z-index:1;" style-hover="z-index:30">
+          <image-slot id="bd-life-5" shape="rounded" radius="18" placeholder="Travel bag" style="display:block; width:100%; height:280px; box-shadow:0 22px 46px -34px rgba(74,16,32,.45); border-radius:18px;"></image-slot>
+          <span style="position:absolute; left:14px; bottom:12px; padding:5px 12px; border-radius:999px; background:rgba(74,16,32,.55); backdrop-filter:blur(6px); font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA);">Travel Bag</span>
+        </div>
+        <div data-reveal="" style="opacity:0; transform:translateY(34px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin-bottom:48px; position:relative; z-index:1;" style-hover="z-index:30">
+          <image-slot id="bd-life-6" shape="rounded" radius="18" placeholder="Afternoon reset" style="display:block; width:100%; height:210px; box-shadow:0 22px 46px -34px rgba(74,16,32,.45); border-radius:18px;"></image-slot>
+          <span style="position:absolute; left:14px; bottom:12px; padding:5px 12px; border-radius:999px; background:rgba(74,16,32,.55); backdrop-filter:blur(6px); font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA);">Afternoon Reset</span>
+        </div>
+      </div>
+
+      <div data-reveal="" style="opacity:0; transform:translateY(24px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin:clamp(46px,7vh,78px) auto 0;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,2vw,24px); color:var(--bd-burgundy,#5B1F23); margin:0 0 18px;">Take clarity wherever you go. Wanna Try?</p>
+        <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 30px; border-radius:999px; font-size:14.5px; font-weight:700; letter-spacing:.01em; text-decoration:none; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#D4AF37) 60%, #b88f29 100%); box-shadow:0 16px 40px -14px rgba(212,175,55,.7), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 24px 52px -16px rgba(212,175,55,.85)" style-active="transform:translateY(-1px) scale(.99)">
+          <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+          <span style="position:relative;">Join The Waitlist →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 8 — SOCIAL PROOF + FINAL CTA -->
+  <!-- ============================================================ -->
+  <section id="reviews" data-screen-label="Reviews" style="display:none; position:relative; padding:clamp(84px,12vh,150px) clamp(20px,6vw,110px) clamp(70px,9vh,110px); background:#F2EADB;">
+    <div style="max-width:1180px; margin:0 auto;">
+      <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); text-align:center; margin-bottom:52px;">
+        <span style="font-size:11px; letter-spacing:.34em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#C39A2E);">Loved By Clear Minds</span>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4.4vw,56px); line-height:1.05; color:var(--bd-deep,#4A1020); margin:14px 0 0;">Real Rituals. Real People.</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:22px;">
+        <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+          <div data-reveal="" style="opacity:0; transform:translateY(36px); transition:opacity .85s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:{{ r.delay }}; position:relative; border-radius:22px; overflow:hidden; box-shadow:0 26px 54px -36px rgba(74,16,32,.5);">
+            <image-slot id="{{ r.id }}" shape="rect" placeholder="{{ r.ph }}" style="display:block; width:100%; height:clamp(320px,38vw,420px);"></image-slot>
+            <div style="position:absolute; inset:0; pointer-events:none; background:linear-gradient(to top, rgba(74,16,32,.78) 0%, rgba(74,16,32,.1) 46%, transparent 70%);"></div>
+            <div style="position:absolute; top:16px; left:16px; width:46px; height:46px; border-radius:50%; background:rgba(247,242,234,.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px -6px rgba(0,0,0,.5);">
+              <span style="color:var(--bd-burgundy,#7A2036); font-size:13px; margin-left:3px;">▶</span>
+            </div>
+            <div style="position:absolute; left:18px; right:18px; bottom:16px;">
+              <span style="color:var(--bd-gold,#E0B84A); font-size:13px; letter-spacing:2px;">★★★★★</span>
+              <div style="font-size:12px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--bd-ivory,#F7F2EA); margin-top:6px;">{{ r.focus }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA (deep burgundy) -->
+  <section id="cta" data-screen-label="Final CTA" style="position:relative; overflow:hidden; padding:clamp(90px,13vh,160px) clamp(20px,6vw,110px); background:radial-gradient(120% 120% at 70% 20%, #5e1628 0%, var(--bd-deep,#4A1020) 70%);">
+    <div style="position:absolute; bottom:-12%; left:-6%; width:48%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle, rgba(224,184,74,.2), rgba(224,184,74,0) 68%); pointer-events:none;"></div>
+    <div style="position:relative; max-width:1120px; margin:0 auto; display:flex; gap:clamp(36px,5vw,90px); align-items:center; flex-wrap:wrap;">
+      <div style="flex:1 1 320px; display:flex; justify-content:center;">
+        <div data-reveal="" style="opacity:0; transform:translateY(40px) scale(.96); transition:opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1); position:relative;">
+          <div style="position:absolute; inset:-14% -8%; border-radius:50%; background:radial-gradient(circle, rgba(224,184,74,.4), rgba(224,184,74,0) 66%); filter:blur(24px);"></div>
+          <div style="filter:drop-shadow(0 44px 56px rgba(0,0,0,.55));">
+            <image-slot id="bd-sachet-hero" shape="rounded" radius="30" placeholder="Brain Drops sachet" style="display:block; position:relative; width:clamp(230px,24vw,320px); height:clamp(310px,32vw,430px);"></image-slot>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1 1 420px; max-width:560px;">
+        <div data-reveal="" style="opacity:0; transform:translateY(30px); transition:opacity .9s ease, transform 1s cubic-bezier(.2,.7,.2,1);">
+          <h2 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(34px,4.6vw,62px); line-height:1.03; color:var(--bd-ivory,#F7F2EA); margin:0 0 24px; text-wrap:balance;">For The Moments That Deserve Your <em style="font-style:italic; color:var(--bd-gold,#E0B84A);">Full Attention.</em></h2>
+          <div style="display:flex; gap:14px; flex-wrap:wrap; margin:0 0 30px;">
+            <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,2.2vw,28px); color:rgba(247,242,234,.85);">Conversations.</span>
+            <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,2.2vw,28px); color:rgba(247,242,234,.85);">Ideas.</span>
+            <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,2.2vw,28px); color:rgba(247,242,234,.85);">Experiences.</span>
+          </div>
+          <p style="font-size:clamp(15px,1.2vw,18px); line-height:1.65; color:rgba(247,242,234,.72); max-width:440px; margin:0 0 36px;">The moments that shape your life deserve your presence.</p>
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px;">
+            <a href="#" onClick="{{ openWaitlist }}" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; padding:18px 36px; border-radius:999px; font-size:15px; font-weight:700; text-decoration:none; color:var(--bd-deep,#4A1020); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#E0B84A) 60%, #b88f29 100%); box-shadow:0 18px 44px -12px rgba(224,184,74,.6), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .35s, box-shadow .35s;" style-hover="transform:translateY(-3px) scale(1.015); box-shadow:0 26px 56px -14px rgba(224,184,74,.8)" style-active="transform:translateY(-1px) scale(.99)">
+              <span style="position:absolute; top:0; bottom:0; width:42%; left:0; background:linear-gradient(100deg, transparent, rgba(255,255,255,.8), transparent); animation:bdSheen 4.6s ease-in-out infinite; pointer-events:none;"></span>
+              <span style="position:relative;">Start Your Clarity Ritual</span>
+            </a>
+            <a href="#" style="display:inline-flex; align-items:center; gap:9px; padding:17px 30px; border-radius:999px; font-size:14.5px; font-weight:600; text-decoration:none; color:var(--bd-ivory,#F7F2EA); background:rgba(247,242,234,.07); border:1px solid rgba(247,242,234,.28); backdrop-filter:blur(12px); transition:background .35s, border-color .35s, transform .35s;" style-hover="background:rgba(247,242,234,.16); border-color:rgba(247,242,234,.5); transform:translateY(-3px)">Learn More <span style="font-size:16px;">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="position:relative; max-width:1120px; margin:clamp(60px,9vh,100px) auto 0; padding-top:30px; border-top:1px solid rgba(247,242,234,.14); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-size:9.5px; letter-spacing:.42em; font-weight:700; color:var(--bd-gold,#E0B84A); text-transform:uppercase;">The Drops Co.</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--bd-ivory,#F7F2EA); margin-top:3px;">Brain Drops</span>
+      </div>
+      <span style="font-size:12px; color:rgba(247,242,234,.5);">Plant Based · No Added Sugar · Made For Modern Life</span>
+    </div>
+  </section>
+
+  <!-- ===== WAITLIST MODAL ===== -->
+  <sc-if value="{{ modalMounted }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ onBackdropClick }}" style="position:fixed; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(40,8,16,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);">
+    <div style="position:relative; width:100%; max-width:440px; border-radius:26px; padding:40px 36px 34px; background:linear-gradient(180deg, rgba(255,251,244,.96), rgba(248,237,227,.96)); border:1px solid rgba(212,175,55,.4); box-shadow:0 40px 90px -30px rgba(40,8,16,.7), inset 0 1px 0 rgba(255,255,255,.8);">
+      <button onClick="{{ closeWaitlist }}" aria-label="Close" style="position:absolute; top:16px; right:16px; width:34px; height:34px; border:none; border-radius:50%; cursor:pointer; background:rgba(91,31,35,.07); color:var(--bd-burgundy,#5B1F23); font-size:17px; line-height:1; transition:background .3s;" style-hover="background:rgba(91,31,35,.16)">✕</button>
+
+      <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <span style="font-size:11px; letter-spacing:.32em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#B8932C);">Join The Waitlist</span>
+        <h3 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,4vw,38px); line-height:1.06; color:var(--bd-deep,#3F1419); margin:10px 0 10px; text-wrap:balance;">Be First To Start Your Clarity Ritual.</h3>
+        <p style="font-size:14.5px; line-height:1.55; color:rgba(74,16,32,.7); margin:0 0 24px;">Tell us a little about you and we’ll let you know the moment Brain Drops is ready.</p>
+        <form onSubmit="{{ submitWaitlist }}" style="display:flex; flex-direction:column; gap:12px;">
+          <input ref="{{ nameRef }}" type="text" required="" placeholder="Your name" autoComplete="name" style="width:100%; padding:15px 18px; border-radius:14px; border:1px solid rgba(91,31,35,.22); background:rgba(255,255,255,.7); font-family:'Hanken Grotesk',sans-serif; font-size:15px; color:var(--bd-deep,#3F1419); outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:var(--bd-gold,#D4AF37); box-shadow:0 0 0 4px rgba(212,175,55,.18)">
+          <input ref="{{ emailRef }}" type="email" required="" placeholder="you@email.com" autoComplete="email" style="width:100%; padding:15px 18px; border-radius:14px; border:1px solid rgba(91,31,35,.22); background:rgba(255,255,255,.7); font-family:'Hanken Grotesk',sans-serif; font-size:15px; color:var(--bd-deep,#3F1419); outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:var(--bd-gold,#D4AF37); box-shadow:0 0 0 4px rgba(212,175,55,.18)">
+          <input ref="{{ cityRef }}" type="text" required="" placeholder="Your city" autoComplete="address-level2" style="width:100%; padding:15px 18px; border-radius:14px; border:1px solid rgba(91,31,35,.22); background:rgba(255,255,255,.7); font-family:'Hanken Grotesk',sans-serif; font-size:15px; color:var(--bd-deep,#3F1419); outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:var(--bd-gold,#D4AF37); box-shadow:0 0 0 4px rgba(212,175,55,.18)">
+          <input ref="{{ phoneRef }}" type="tel" placeholder="Phone number (optional)" autoComplete="tel" style="width:100%; padding:15px 18px; border-radius:14px; border:1px solid rgba(91,31,35,.22); background:rgba(255,255,255,.7); font-family:'Hanken Grotesk',sans-serif; font-size:15px; color:var(--bd-deep,#3F1419); outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:var(--bd-gold,#D4AF37); box-shadow:0 0 0 4px rgba(212,175,55,.18)">
+          <sc-if value="{{ showErr }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:12.5px; color:#a8324a; padding-left:4px;">{{ errMsg }}</div>
+          </sc-if>
+          <button type="submit" style="position:relative; overflow:hidden; margin-top:4px; width:100%; padding:16px; border:none; border-radius:14px; cursor:pointer; font-family:'Hanken Grotesk',sans-serif; font-size:15px; font-weight:700; letter-spacing:.01em; color:var(--bd-deep,#3F1419); background:linear-gradient(180deg,#f4dd97 0%, var(--bd-gold,#D4AF37) 60%, #b88f29 100%); box-shadow:0 14px 34px -12px rgba(212,175,55,.75), inset 0 1px 0 rgba(255,255,255,.6); transition:transform .3s, box-shadow .3s;" style-hover="transform:translateY(-2px); box-shadow:0 20px 44px -14px rgba(212,175,55,.9)" style-active="transform:translateY(0)">Join The Waitlist</button>
+        </form>
+        <p style="font-size:11.5px; color:rgba(74,16,32,.5); text-align:center; margin:16px 0 0;">No spam. Just clarity. Unsubscribe anytime.</p>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showSuccess }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align:center; padding:8px 0 6px;">
+        <div style="width:64px; height:64px; margin:0 auto 20px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#f4dd97,var(--bd-gold,#D4AF37)); color:var(--bd-deep,#3F1419); font-size:28px; box-shadow:0 12px 30px -10px rgba(212,175,55,.8);">✓</div>
+        <span style="font-size:11px; letter-spacing:.32em; font-weight:700; text-transform:uppercase; color:var(--bd-gold-dp,#B8932C);">Welcome To The Ritual</span>
+        <h3 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,4vw,36px); line-height:1.08; color:var(--bd-deep,#3F1419); margin:8px 0 10px;">{{ successHeading }}</h3>
+        <p style="font-size:14.5px; line-height:1.55; color:rgba(74,16,32,.72); margin:0 0 24px;">{{ successMsg }}</p>
+        <button onClick="{{ closeWaitlist }}" style="padding:13px 30px; border:1px solid rgba(91,31,35,.25); border-radius:999px; cursor:pointer; background:rgba(255,255,255,.5); font-family:'Hanken Grotesk',sans-serif; font-size:14px; font-weight:600; color:var(--bd-deep,#3F1419); transition:background .3s;" style-hover="background:rgba(255,255,255,.85)">Done</button>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <template id="__bundler_thumbnail" data-bg-color="#F8EDE3">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#F8EDE3"></rect>
+      <circle cx="600" cy="360" r="150" fill="none" stroke="#D4AF37" stroke-width="10"></circle>
+      <path d="M600 270 c40 -16 78 4 86 36 c34 8 46 48 24 76 c20 26 -2 70 -40 66 c-8 30 -48 40 -70 22 c-22 18 -62 8 -70 -22 c-38 4 -60 -40 -40 -66 c-22 -28 -10 -68 24 -76 c8 -32 46 -52 86 -36 Z" fill="#5B1F23"></path>
+      <text x="600" y="610" font-family="Georgia, 'Cormorant Garamond', serif" font-size="76" fill="#5B1F23" text-anchor="middle">Brain Drops</text>
+      <text x="600" y="668" font-family="Helvetica, sans-serif" font-size="24" letter-spacing="8" fill="#B8932C" text-anchor="middle">THE DROPS CO.</text>
+    </svg>
+  </template>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1440, &quot;height&quot;: 900 },
+  &quot;accentColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#D4AF37&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;accentLightColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#E3C766&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;burgundyColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#5B1F23&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;ivoryColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#F8EDE3&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;sheetEndpoint&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.rootRef = React.createRef();
+    this.bgRef = React.createRef();
+    this.sachetRef = React.createRef();
+    this.contentRef = React.createRef();
+    this.videoRef = React.createRef();
+    this.clipVideoRef = React.createRef();
+    this.nameRef = React.createRef();
+    this.emailRef = React.createRef();
+    this.cityRef = React.createRef();
+    this.phoneRef = React.createRef();
+    this.target = { x:0, y:0 };
+    this.cur = { x:0, y:0 };
+  }
+
+  applyTokens(){
+    const r = this.rootRef.current; if(!r) return;
+    const p = this.props || {};
+    if(p.accentColor){ r.style.setProperty('--bd-gold', p.accentColor); }
+    if(p.accentLightColor){ r.style.setProperty('--bd-gold-lt', p.accentLightColor); }
+    if(p.burgundyColor){ r.style.setProperty('--bd-burgundy', p.burgundyColor); }
+    if(p.ivoryColor){ r.style.setProperty('--bd-ivory', p.ivoryColor); }
+  }
+
+  componentDidMount(){
+    this.applyTokens();
+
+    // Hero parallax (mouse + light scroll)
+    this._onMove = (e) => {
+      this.target.x = (e.clientX / window.innerWidth - 0.5);
+      this.target.y = (e.clientY / window.innerHeight - 0.5);
+    };
+    window.addEventListener('mousemove', this._onMove, { passive:true });
+    const loop = () => {
+      this.cur.x += (this.target.x - this.cur.x) * 0.07;
+      this.cur.y += (this.target.y - this.cur.y) * 0.07;
+      const x = this.cur.x, y = this.cur.y;
+      const sc = window.scrollY || 0;
+      if(this.bgRef.current){
+        this.bgRef.current.style.transform = `scale(1.06) translate3d(${x*-26}px, ${(y*-20)+(sc*0.08)}px, 0)`;
+      }
+      if(this.sachetRef.current){
+        this.sachetRef.current.style.transform = `translate3d(${x*46}px, ${(y*40)}px, 0)`;
+      }
+      if(this.contentRef.current){
+        this.contentRef.current.style.opacity = String(Math.max(0, 1 - sc/620));
+      }
+      this._raf = requestAnimationFrame(loop);
+    };
+    this._raf = requestAnimationFrame(loop);
+
+    // Scroll-triggered reveals
+    const root = this.rootRef.current;
+    if(root && 'IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if(en.isIntersecting){
+            en.target.style.opacity = '1';
+            en.target.style.transform = 'none';
+            io.unobserve(en.target);
+          }
+        });
+      }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+      root.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+      this._io = io;
+    }
+
+    this.setupHls(0);
+    this.initInteractions();
+  }
+
+  setupHls(tries){
+    const video = this.clipVideoRef.current;
+    if(!video) return;
+    const SRC = 'https://stream.mux.com/bnYL6x5cAX6WiJv2pOKpITehZd3NVdXpj3ylJFpX5Lk.m3u8';
+    const HlsLib = window.Hls;
+    if(HlsLib && HlsLib.isSupported()){
+      const hls = new HlsLib({ startLevel:-1, capLevelToPlayerSize:false, maxMaxBufferLength:60, enableWorker:true });
+      hls.loadSource(SRC);
+      hls.attachMedia(video);
+      hls.on(HlsLib.Events.MANIFEST_PARSED, () => { video.play().catch(() => {}); });
+      this._hls = hls;
+    } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+      video.src = SRC;
+      video.play().catch(() => {});
+    } else if((tries || 0) < 25){
+      setTimeout(() => this.setupHls((tries || 0) + 1), 200);
+    }
+  }
+
+  initInteractions(){
+    const root = this.rootRef.current; if(!root) return;
+    const cmp = root.querySelector('[data-cmp]'); if(!cmp) return;
+    this._cmpEl = cmp;
+    this._down = (e) => {
+      const target = e.target.closest('[data-card]');
+      if(!target || !cmp.contains(target)) return;
+      e.preventDefault();
+      this._drag = { el:target, sx:e.clientX, sy:e.clientY, moved:false, isVid: target.hasAttribute('data-vid') };
+      target.style.transition = 'none';
+      target.style.zIndex = '40';
+      target.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+    };
+    this._move = (e) => {
+      if(!this._drag) return;
+      const dx = e.clientX - this._drag.sx, dy = e.clientY - this._drag.sy;
+      if(Math.abs(dx) > 4 || Math.abs(dy) > 4) this._drag.moved = true;
+      this._drag.el.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.025}deg) scale(1.05)`;
+      this._drag.el.style.boxShadow = '0 34px 56px -24px rgba(63,20,25,.45)';
+    };
+    this._up = () => {
+      if(!this._drag) return;
+      const el = this._drag.el, moved = this._drag.moved, isVid = this._drag.isVid;
+      el.style.transition = 'transform .6s cubic-bezier(.2,.9,.25,1.2), box-shadow .4s, border-color .3s';
+      el.style.cursor = 'grab';
+      document.body.style.userSelect = '';
+      if(!moved){ isVid ? this.toggleVideo() : this.toggleCard(el); }
+      const sel = el.dataset.selected === '1';
+      el.style.transform = sel ? 'translateY(-6px) scale(1.02)' : '';
+      el.style.boxShadow = sel ? '0 22px 44px -22px rgba(212,175,55,.55)' : '';
+      setTimeout(() => { if(el) el.style.zIndex = ''; }, 600);
+      this._drag = null;
+    };
+    cmp.addEventListener('pointerdown', this._down);
+    window.addEventListener('pointermove', this._move, { passive:true });
+    window.addEventListener('pointerup', this._up, { passive:true });
+  }
+
+  toggleCard(el){
+    const sel = el.dataset.selected === '1';
+    el.dataset.selected = sel ? '0' : '1';
+    el.style.borderColor = sel ? '' : 'rgba(212,175,55,.85)';
+  }
+
+  toggleVideo(){
+    const v = this.clipVideoRef.current; if(!v) return;
+    const ov = this._cmpEl ? this._cmpEl.querySelector('[data-vidoverlay]') : null;
+    if(v.paused){ v.play().catch(() => {}); if(ov) ov.style.opacity = '0'; }
+    else { v.pause(); if(ov) ov.style.opacity = '1'; }
+  }
+
+  componentDidUpdate(){ this.applyTokens(); }
+
+  componentWillUnmount(){
+    window.removeEventListener('mousemove', this._onMove);
+    if(this._raf) cancelAnimationFrame(this._raf);
+    if(this._io) this._io.disconnect();
+    if(this._hls) this._hls.destroy();
+    if(this._move) window.removeEventListener('pointermove', this._move);
+    if(this._up) window.removeEventListener('pointerup', this._up);
+    if(this._cmpEl && this._down) this._cmpEl.removeEventListener('pointerdown', this._down);
+    if(this._wmove) window.removeEventListener('pointermove', this._wmove);
+    if(this._wup) window.removeEventListener('pointerup', this._wup);
+    if(this._wheel && this._wdown) this._wheel.removeEventListener('pointerdown', this._wdown);
+  }
+
+  openWaitlist(e){
+    if(e) e.preventDefault();
+    this.setState({ modalMounted:true, modalPhase:'form', showErr:false });
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { if(this.nameRef.current) this.nameRef.current.focus(); }, 380);
+  }
+
+  closeWaitlist(e){
+    if(e) e.preventDefault();
+    this.setState({ modalMounted:false });
+    document.body.style.overflow = '';
+  }
+
+  onBackdropClick(e){
+    if(e.currentTarget === e.target) this.closeWaitlist();
+  }
+
+  submitWaitlist(e){
+    e.preventDefault();
+    const nameI = this.nameRef.current, emailI = this.emailRef.current, cityI = this.cityRef.current;
+    const name = (nameI && nameI.value || '').trim();
+    const email = (emailI && emailI.value || '').trim();
+    const city = (cityI && cityI.value || '').trim();
+    if(!name){ this.setState({ showErr:true, errMsg:'Please enter your name.' }); if(nameI) nameI.focus(); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ this.setState({ showErr:true, errMsg:'Please enter a valid email.' }); if(emailI) emailI.focus(); return; }
+    if(!city){ this.setState({ showErr:true, errMsg:'Please enter your city.' }); if(cityI) cityI.focus(); return; }
+    const phoneI = this.phoneRef.current;
+    const phone = (phoneI && phoneI.value || '').trim();
+    if(phone && !/^[+()\d][\d\s().-]{5,}$/.test(phone)){ this.setState({ showErr:true, errMsg:'Please enter a valid phone number.' }); if(phoneI) phoneI.focus(); return; }
+    this.saveToSheet({ name, email, city, phone });
+    this.setState({ showErr:false, modalPhase:'success', successName: name.split(' ')[0], successCity: city });
+    if(nameI) nameI.value = ''; if(emailI) emailI.value = ''; if(cityI) cityI.value = ''; if(phoneI) phoneI.value = '';
+  }
+
+  saveToSheet(data){
+    // Paste your Google Apps Script Web App URL into the SHEET_ENDPOINT tweak (or the prop default below).
+    const url = (this.props && this.props.sheetEndpoint || '').trim();
+    const row = {
+      name: data.name, email: data.email, city: data.city, phone: data.phone || '',
+      timestamp: new Date().toISOString(),
+      source: (typeof location !== 'undefined' ? location.href : '')
+    };
+    // Keep a local backup regardless of network result.
+    try {
+      const key = 'bd-waitlist';
+      const prev = JSON.parse(localStorage.getItem(key) || '[]');
+      prev.push(row);
+      localStorage.setItem(key, JSON.stringify(prev));
+    } catch(err){ /* ignore */ }
+    if(!url){ console.warn('[waitlist] No sheetEndpoint set — saved locally only.'); return; }
+    try {
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(row)
+      }).catch((err) => console.warn('[waitlist] sheet POST failed', err));
+    } catch(err){ console.warn('[waitlist] sheet POST error', err); }
+  }
+
+  renderVals(){
+    const st = this.state || {};
+    return {
+      modalMounted: !!st.modalMounted,
+      showForm: st.modalPhase !== 'success',
+      showSuccess: st.modalPhase === 'success',
+      showErr: !!st.showErr,
+      errMsg: st.errMsg || 'Please complete all fields.',
+      successHeading: st.successName ? ('You\u2019re On The List, ' + st.successName + '.') : 'You\u2019re On The List.',
+      successMsg: st.successName
+        ? ('Thank you, ' + st.successName + '. Your clarity ritual is reserved' + (st.successCity ? ' \u2014 we\u2019ll reach out the moment Brain Drops lands in ' + st.successCity + '.' : '. We\u2019ll be in touch very soon.'))
+        : 'We\u2019ll be in touch soon with your first ritual.',
+      rootRef: this.rootRef,
+      bgRef: this.bgRef,
+      sachetRef: this.sachetRef,
+      contentRef: this.contentRef,
+      videoRef: this.videoRef,
+      onVideoLoaded: () => { if(this.videoRef.current) this.videoRef.current.style.opacity = '0.85'; },
+      clipVideoRef: this.clipVideoRef,
+      nameRef: this.nameRef,
+      emailRef: this.emailRef,
+      cityRef: this.cityRef,
+      phoneRef: this.phoneRef,
+      openWaitlist: (e) => this.openWaitlist(e),
+      closeWaitlist: (e) => this.closeWaitlist(e),
+      onBackdropClick: (e) => this.onBackdropClick(e),
+      submitWaitlist: (e) => this.submitWaitlist(e),
+      foggyList: ['Reaching for a third coffee just to focus','Reading the same paragraph twice','Energy that spikes, then crashes by noon','Pills, powders and complicated routines','Wellness that interrupts your day'],
+      clearList: ['Calm, steady focus that lasts','Present for the moments that matter','Smooth clarity — no crash','One simple liquid sachet','Wellness that moves with your day'],
+      benefits: ['Mental Clarity','Focus Support','Everyday Balance','Plant Based','No Added Sugar'],
+      trust: ['Plant Based','No Added Sugar','Liquid Wellness','Made For Modern Life'],
+      problems: [
+        { id:'bd-prob-1', n:'01', text:'Reading the same paragraph twice.', ph:'Lifestyle photo — reading', delay:'0s' },
+        { id:'bd-prob-2', n:'02', text:'Walking into a room and forgetting why.', ph:'Lifestyle photo — distracted moment', delay:'.12s' },
+        { id:'bd-prob-3', n:'03', text:'Struggling to stay present during important moments.', ph:'Lifestyle photo — meeting', delay:'.24s' },
+      ],
+      diffBlocks: [
+        { id:'bd-ill-1', title:'Clearer Thinking', delay:'0s' },
+        { id:'bd-ill-2', title:'Better Presence', delay:'.1s' },
+        { id:'bd-ill-3', title:'Everyday Balance', delay:'.2s' },
+        { id:'bd-ill-4', title:'Simple Wellness', delay:'.3s' },
+      ],
+      steps: [
+        { n:'01', title:'Open', text:'Tear open the sachet in seconds.', delay:'0s', icon:'media/icon-open.png' },
+        { n:'02', title:'Sip', text:'Enjoy the delicious liquid ritual.', delay:'.15s', icon:'media/icon-sip.png' },
+        { n:'03', title:'Show Up', text:'Continue your day feeling ready for what matters.', delay:'.3s', icon:'media/icon-showup.png' },
+      ],
+      liquidPros: ['Open.','Sip.','Go.'],
+      liquidCons: ['Find water.','Swallow pills.','Carry bottles.','Remember routines.'],
+      reviews: [
+        { id:'bd-test-1', focus:'Taste · Daily Ritual', ph:'UGC video testimonial', delay:'0s' },
+        { id:'bd-test-2', focus:'Convenience', ph:'UGC video testimonial', delay:'.12s' },
+        { id:'bd-test-3', focus:'Mental Clarity', ph:'UGC video testimonial', delay:'.24s' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
